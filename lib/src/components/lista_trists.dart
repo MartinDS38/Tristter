@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristter/src/components/trist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'video_player.dart';
 
 final tristsRef = FirebaseFirestore.instance
     .collection('trists')
@@ -85,7 +86,7 @@ class _TristItemState extends State<_TristItem> {
   }
 
   Widget get video {
-    return Text(widget.trist.urlVideo!);
+    return VideoPlayerWidget(videoUrl: widget.trist.urlVideo!);
   }
 
   Widget get promedioEstrellas {
@@ -118,9 +119,9 @@ class _TristItemState extends State<_TristItem> {
               const SizedBox(height: 8),
               if (widget.trist.urlImagen != "") // Mostrar imagen si existe
                 imagen,
-              /*if (widget.urlVideo != "") // Mostrar video si existe
-                VideoPlayerWidget(videoFile: widget.urlVideo),
-              const SizedBox(height: 8),*/
+              if (widget.trist.urlVideo != "") // Mostrar video si existe
+                video,
+              const SizedBox(height: 8),
               fecha,
               const SizedBox(height: 8),
               Row(
