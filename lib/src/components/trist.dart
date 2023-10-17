@@ -1,9 +1,9 @@
 class Trist {
   final String autor, mensaje, fecha;
-  final String? urlImagen, urlVideo;
+  String? urlImagen, urlVideo;
   final int promedioEstrellas, cantidadValoraciones;
 
-  const Trist({
+  Trist({
     required this.autor,
     required this.mensaje,
     required this.fecha,

@@ -7,8 +7,8 @@ import 'miniatura_video.dart';
 import 'package:image_picker/image_picker.dart';
 import 'trist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../pages/home_page.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CrearTrist extends StatefulWidget {
   final TextEditingController controller;
@@ -58,6 +58,23 @@ class _CrearTrist extends State<CrearTrist> {
     }
   }
 
+  Future<String> subirArchivo(File file, String folderName) async {
+    final Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child(folderName)
+        .child(DateTime.now().toString());
+
+    final UploadTask uploadTask = storageReference.putFile(file);
+    final TaskSnapshot taskSnapshot = await uploadTask;
+
+    if (taskSnapshot.state == TaskState.success) {
+      final String downloadURL = await taskSnapshot.ref.getDownloadURL();
+      return downloadURL;
+    } else {
+      return ""; // Ocurrió un error al subir el archivo
+    }
+  }
+
   Future<void> _enviarMensaje() async {
     final autor = _autorController.text;
     final mensaje = _textEditingController.text;
@@ -74,6 +91,14 @@ class _CrearTrist extends State<CrearTrist> {
       cantidadValoraciones: 0,
     );
 
+    if (_hasFoto) {
+      trist.urlImagen = await subirArchivo(_selectedImage!, "imagenes");
+    }
+
+    if (_hasVideo) {
+      trist.urlVideo = await subirArchivo(_selectedVideo!, "videos");
+    }
+
     try {
       final tristsRef = FirebaseFirestore.instance.collection('trists');
 
@@ -84,11 +109,7 @@ class _CrearTrist extends State<CrearTrist> {
       print('Error al agregar el Trist a Firebase: $e');
     }
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => HomePage(),
-      ),
-    );
+    Navigator.of(context).pop();
   }
 
   @override

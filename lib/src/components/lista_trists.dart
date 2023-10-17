@@ -60,8 +60,18 @@ class _TristItem extends StatefulWidget {
 }
 
 class _TristItemState extends State<_TristItem> {
-  int puntuacion = 0;
+  int estrellas = 0;
+  double promedio = 0;
   bool isRated = false; // Indica si se ha calificado el mensaje
+
+  int cantidadValoraciones = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    cantidadValoraciones = widget.trist.cantidadValoraciones;
+    promedio = widget.trist.promedioEstrellas.toDouble();
+  }
 
   Widget get autor {
     return Text(
@@ -90,7 +100,12 @@ class _TristItemState extends State<_TristItem> {
   }
 
   Widget get promedioEstrellas {
-    return Text('Promedio: ${widget.trist.promedioEstrellas}');
+    if (cantidadValoraciones != 0) {
+      promedio = (promedio * (cantidadValoraciones - 1) + estrellas) /
+          cantidadValoraciones;
+    }
+    String promedioRedondeado = promedio.toStringAsFixed(1);
+    return Text('Valoración promedio: $promedioRedondeado');
   }
 
   @override
@@ -133,13 +148,14 @@ class _TristItemState extends State<_TristItem> {
                       return IconButton(
                         icon: Icon(
                           Icons.star,
-                          color: puntuacion >= starValue
+                          color: estrellas >= starValue
                               ? Colors.yellow
                               : Colors.grey,
                         ),
                         onPressed: () {
                           setState(() {
-                            puntuacion = starValue;
+                            estrellas = starValue;
+                            cantidadValoraciones++;
                             isRated ? null : (isRated = true);
                           });
                         },
