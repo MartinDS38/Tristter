@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
-  final File videoFile;
+  final String videoUrl;
 
-  const VideoPlayerWidget({super.key, required this.videoFile});
+  const VideoPlayerWidget({super.key, required this.videoUrl});
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -13,44 +13,31 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late VideoPlayerController _videoController;
+  late ChewieController _chewieController;
 
   @override
   void initState() {
     super.initState();
-    _videoController = VideoPlayerController.file(widget.videoFile)
-      ..initialize().then((_) {
-        // Asegurarse de que el controlador está listo antes de llamar setState
-        setState(() {});
-      });
+    _videoController =
+        VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+
+    _chewieController = ChewieController(
+      videoPlayerController: _videoController,
+      aspectRatio: 16 / 9,
+      autoInitialize: true,
+      autoPlay: false,
+      looping: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: _videoController.value.aspectRatio,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          VideoPlayer(_videoController),
-          Center(
-            child: IconButton(
-              icon: Icon(
-                _videoController.value.isPlaying
-                    ? Icons.pause
-                    : Icons.play_arrow,
-              ),
-              onPressed: () {
-                setState(() {
-                  if (_videoController.value.isPlaying) {
-                    _videoController.pause();
-                  } else {
-                    _videoController.play();
-                  }
-                });
-              },
-            ),
-          ),
-        ],
+    return SizedBox(
+      height: MediaQuery.of(context).orientation == Orientation.landscape
+          ? null // Usar la altura predeterminada en modo horizontal
+          : 200, // Altura en modo vertical
+      child: Chewie(
+        controller: _chewieController,
       ),
     );
   }
@@ -59,5 +46,6 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void dispose() {
     super.dispose();
     _videoController.dispose();
+    _chewieController.dispose();
   }
 }
