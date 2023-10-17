@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "156132874867",
+    "project_id": "tristter-9e268",
+    "storage_bucket": "tristter-9e268.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156132874867:android:2da953557f9a51c452a806",
+        "android_client_info": {
+          "package_name": "com.example.tristter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpqCLjyj3fM5_g6zBnaNBqvwNaGS-7G2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
